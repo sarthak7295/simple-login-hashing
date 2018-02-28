@@ -6,25 +6,31 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import per.sar.login.entity.LoginCredentials;
+import per.sar.login.entity.ResponseLogin;
 import per.sar.login.repo.LoginRepo;
 
 @RestController
+@CrossOrigin
 public class LoginController {
 
 	@Autowired
 	LoginRepo loginRepo;
 
 	@PostMapping("/register")
-	public ResponseEntity<String> create(@RequestBody Map<String, String> body){
-		String username = body.get("username");
-		String pass = body.get("pass");
+	public ResponseEntity<ResponseLogin> create(@RequestBody Map<String, String> body){
+		String username = body.get("email");
+		String pass = body.get("password");
 		pass=hashPassword(pass);
 		
 		try{
@@ -38,28 +44,33 @@ public class LoginController {
 		}
 		catch (Exception e) {
 			System.err.println(e);
-			return new ResponseEntity<>("username alreday exists",HttpStatus.UNAUTHORIZED);
+			ResponseLogin responseLogin= new ResponseLogin("some error"+e,"false");
+			return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
 		}
-
-		return new ResponseEntity<>("Sucessfully registered",HttpStatus.OK);
+		ResponseLogin responseLogin= new ResponseLogin("none","true");
+		return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
 	}
 
-	@PostMapping("/login")
-	public ResponseEntity<String> login(@RequestBody Map<String, String> body){
-		String username = body.get("username");
-		String pass = body.get("pass");
+	@RequestMapping(value="/login",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseLogin> login(@RequestBody Map<String, String> body){
+		String username = body.get("email");
+		String pass = body.get("password");
 		pass=hashPassword(pass);
 		if(loginRepo.exists(username)){
 			String storedPassword=loginRepo.findOne(username).getPass();
 			if(pass.equals(storedPassword)){
-				return new ResponseEntity<>("Sucess",HttpStatus.OK);
+				ResponseLogin responseLogin= new ResponseLogin("none","true");
+				return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
 			}
 			else{
-				return new ResponseEntity<>("Wrong password",HttpStatus.UNAUTHORIZED);
+				ResponseLogin responseLogin= new ResponseLogin("wrong password","false","csd");
+				return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.UNAUTHORIZED);
 			}
 		}
 		else{
-			return new ResponseEntity<>("No such username exists",HttpStatus.NO_CONTENT);
+			ResponseLogin responseLogin= new ResponseLogin("No such username exists","false","well");
+			
+			return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
 		}
 
 	}
