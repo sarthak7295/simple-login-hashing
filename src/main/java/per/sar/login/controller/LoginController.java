@@ -69,7 +69,7 @@ public class LoginController {
 		}
 		else{
 			ResponseLogin responseLogin= new ResponseLogin("No such username exists","false","well");
-			
+			 
 			return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
 		}
 
