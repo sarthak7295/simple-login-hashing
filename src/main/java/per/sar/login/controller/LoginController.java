@@ -16,65 +16,65 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import per.sar.login.entity.LoginCredentials;
 import per.sar.login.entity.ResponseLogin;
-import per.sar.login.repo.LoginRepo;
+//import per.sar.login.entity.LoginCredentials;
+//import per.sar.login.repo.LoginRepo;
 
 @RestController
 @CrossOrigin
 public class LoginController {
 
-	@Autowired
-	LoginRepo loginRepo;
-
-	@PostMapping("/register")
-	public ResponseEntity<ResponseLogin> create(@RequestBody Map<String, String> body){
-		String username = body.get("email");
-		String pass = body.get("password");
-		pass=hashPassword(pass);
-		
-		try{
-			if(!loginRepo.exists(username)){
-				loginRepo.save(new LoginCredentials(username, pass));
-			}else{
-				Exception idException = new Exception("Username already exists");
-				throw idException;
-			}
-
-		}
-		catch (Exception e) {
-			System.err.println(e);
-			ResponseLogin responseLogin= new ResponseLogin("some error"+e,"false");
-			return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
-		}
-		ResponseLogin responseLogin= new ResponseLogin("none","true");
-		return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
-	}
-
-	@RequestMapping(value="/login",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ResponseLogin> login(@RequestBody Map<String, String> body){
-		String username = body.get("email");
-		String pass = body.get("password");
-		pass=hashPassword(pass);
-		if(loginRepo.exists(username)){
-			String storedPassword=loginRepo.findOne(username).getPass();
-			if(pass.equals(storedPassword)){
-				ResponseLogin responseLogin= new ResponseLogin("none","true");
-				return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
-			}
-			else{
-				ResponseLogin responseLogin= new ResponseLogin("wrong password","false","csd");
-				return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.UNAUTHORIZED);
-			}
-		}
-		else{
-			ResponseLogin responseLogin= new ResponseLogin("No such username exists","false","well");
-			 
-			return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
-		}
-
-	}
-
+//	@Autowired
+//	LoginRepo loginRepo;
+//
+//	@PostMapping("/register")
+//	public ResponseEntity<ResponseLogin> create(@RequestBody Map<String, String> body){
+//		String username = body.get("email");
+//		String pass = body.get("password");
+//		pass=hashPassword(pass);
+//		
+//		try{
+//			if(!loginRepo.exists(username)){
+//				loginRepo.save(new LoginCredentials(username, pass));
+//			}else{
+//				Exception idException = new Exception("Username already exists");
+//				throw idException;
+//			}
+//
+//		}
+//		catch (Exception e) {
+//			System.err.println(e);
+//			ResponseLogin responseLogin= new ResponseLogin("some error"+e,"false");
+//			return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
+//		}
+//		ResponseLogin responseLogin= new ResponseLogin("none","true");
+//		return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
+//	}
+//
+//	@RequestMapping(value="/login",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<ResponseLogin> login(@RequestBody Map<String, String> body){
+//		String username = body.get("email");
+//		String pass = body.get("password");
+//		pass=hashPassword(pass);
+//		if(loginRepo.exists(username)){
+//			String storedPassword=loginRepo.findOne(username).getPass();
+//			if(pass.equals(storedPassword)){
+//				ResponseLogin responseLogin= new ResponseLogin("none","true");
+//				return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
+//			}
+//			else{
+//				ResponseLogin responseLogin= new ResponseLogin("wrong password","false","csd");
+//				return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.UNAUTHORIZED);
+//			}
+//		}
+//		else{
+//			ResponseLogin responseLogin= new ResponseLogin("No such username exists","false","well");
+//			 
+//			return new ResponseEntity<ResponseLogin>(responseLogin,HttpStatus.OK);
+//		}
+//
+//	}
+//
 	@GetMapping("/healthcheck")
 	public ResponseEntity<String> hc(){
 		return new ResponseEntity<>("welldone",HttpStatus.OK );
