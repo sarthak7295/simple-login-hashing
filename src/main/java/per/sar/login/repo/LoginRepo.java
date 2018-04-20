@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import per.sar.login.entity.LoginCredentials;
 @Repository
 @Transactional
-public interface LoginRepo extends JpaRepository<LoginCredentials, String> {   //<entity calss,Data type of primery key>
+public interface LoginRepo extends JpaRepository<LoginCredentials, String> {   //<entity Class,Data type of primary key>
 
 
 	 List<LoginCredentials> findByUsernameContainingOrPassContaining(String text, String textAgain);
